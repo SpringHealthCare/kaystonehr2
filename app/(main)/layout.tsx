@@ -1,10 +1,10 @@
 "use client"
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/auth-context'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
-export default function AuthLayout({
+export default function MainLayout({
   children,
 }: {
   children: React.ReactNode
@@ -13,8 +13,8 @@ export default function AuthLayout({
   const router = useRouter()
 
   useEffect(() => {
-    if (!loading && user) {
-      router.push('/')
+    if (!loading && !user) {
+      router.push('/auth/sign-in')
     }
   }, [user, loading, router])
 
@@ -26,15 +26,9 @@ export default function AuthLayout({
     )
   }
 
-  if (user) {
+  if (!user) {
     return null
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="max-w-md w-full space-y-8 p-8">
-        {children}
-      </div>
-    </div>
-  )
+  return children
 } 
