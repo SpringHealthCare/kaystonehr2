@@ -6,13 +6,16 @@ import { Header } from '@/components/header'
 import { usePathname } from 'next/navigation'
 import { Loader2 } from 'lucide-react'
 
-export default function EmployeeLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+const publicPaths = ['/auth/sign-in', '/auth/sign-up', '/auth/forgot-password']
+
+export function ClientLayout({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useNewAuth()
   const pathname = usePathname()
+
+  // Allow access to public paths without authentication
+  if (publicPaths.includes(pathname)) {
+    return <>{children}</>
+  }
 
   if (isLoading) {
     return (
@@ -22,13 +25,14 @@ export default function EmployeeLayout({
     )
   }
 
-  if (!user || user.role !== 'employee') {
+  // Redirect to sign-in if not authenticated
+  if (!user) {
     return null
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header user={user} />
+      <Header />
       <div className="flex">
         <Sidebar activePath={pathname} />
         <main className="flex-1 p-8">
